@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.scene.shape.Line?>
+<VBox alignment="BOTTOM_CENTER" maxHeight="Infinity" prefHeight="800.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+
+        <Label alignment="BOTTOM_RIGHT" ellipsisString="" graphicTextGap="0.0" maxHeight="Infinity" maxWidth="Infinity" prefHeight="350.0" prefWidth="500.0" text="123123123123123123123123123" textAlignment="RIGHT" textOverrun="CLIP">
+            <style>
+                -fx-background-color: #fff;
+            </style>
+            <font>
+                <Font size="61.0" />
+            </font>
+        </Label>
+
+        <Line />
+
+        <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="450.0" prefWidth="500.0" VBox.vgrow="ALWAYS"
+            stylesheets="@/css/keyboard.css">
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+            </rowConstraints>
+            <children>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" AC " styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" ← " GridPane.columnIndex="1" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" % " GridPane.columnIndex="2" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" / " GridPane.columnIndex="3" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" 7 " GridPane.rowIndex="1" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" 8 " GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" 9 " GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" * " GridPane.columnIndex="3" GridPane.rowIndex="1" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" 4 " GridPane.rowIndex="2" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" 5 " GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" 6 " GridPane.columnIndex="2" GridPane.rowIndex="2" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" - " GridPane.columnIndex="3" GridPane.rowIndex="2" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" 1 " GridPane.rowIndex="3" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" 2 " GridPane.columnIndex="1" GridPane.rowIndex="3" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" 3 " GridPane.columnIndex="2" GridPane.rowIndex="3" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" + " GridPane.columnIndex="3" GridPane.rowIndex="3" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" S " GridPane.rowIndex="4" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" 0 " GridPane.columnIndex="1" GridPane.rowIndex="4" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" . " GridPane.columnIndex="2" GridPane.rowIndex="4" styleClass="KeyboardButton"/>
+                <Button maxHeight="Infinity" maxWidth="Infinity" text=" = " GridPane.columnIndex="3" GridPane.rowIndex="4" styleClass="KeyboardButton"/>
+            </children>
+        </GridPane>
+    </children>
+</VBox>
