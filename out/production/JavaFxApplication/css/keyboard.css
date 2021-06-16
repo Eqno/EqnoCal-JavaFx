@@ -1,4 +1,9 @@
 .KeyboardButton {
     -fx-background-color: #fff;
-    -fx-font-size: 30px;
+}
+.KeyboardButton:hover {
+    -fx-background-color: rgba(0,0,0,0.06) !important;
+}
+.KeyboardButton:pressed {
+    -fx-background-color: rgba(0,0,0,0.12) !important;
 }
