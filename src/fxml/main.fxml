@@ -6,20 +6,20 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="BOTTOM_CENTER" maxHeight="Infinity" minHeight="500" minWidth="300" prefHeight="800.0" prefWidth="500.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.Controller">
+<VBox alignment="BOTTOM_CENTER" maxHeight="Infinity" minHeight="500" minWidth="300" prefHeight="800.0" prefWidth="500.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fx.Controller">
     <children>
-      <Label fx:id="secondScreen" alignment="BOTTOM_RIGHT" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="300.0" prefWidth="556.0" VBox.vgrow="ALWAYS">
+      <Label fx:id="secondScreen" alignment="BOTTOM_RIGHT" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="300.0" prefWidth="556.0" text=" " VBox.vgrow="ALWAYS">
          <font>
-            <Font size="40.0" />
+            <Font name="Microsoft YaHei" size="30.0" />
          </font>
       </Label>
 
-        <Label fx:id="mainScreen" alignment="BOTTOM_RIGHT" graphicTextGap="0.0" maxHeight="Infinity" maxWidth="Infinity" prefHeight="100.0" prefWidth="485.0" text="0" textAlignment="RIGHT">
+        <Label fx:id="mainScreen" alignment="CENTER_RIGHT" contentDisplay="CENTER" graphicTextGap="0.0" maxHeight="Infinity" maxWidth="Infinity" prefHeight="100.0" prefWidth="485.0" text="0" textAlignment="RIGHT">
             <style>
                 -fx-background-color: #fff;
             </style>
             <font>
-                <Font size="50.0" />
+                <Font name="Microsoft YaHei" size="60.0" />
             </font>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

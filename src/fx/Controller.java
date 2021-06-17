@@ -1,254 +1,25 @@
 package fx;
 
+import com.sun.glass.ui.Size;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.text.Font;
 
-import java.math.BigDecimal;
 import java.lang.String;
-import java.math.MathContext;ge fx;
-
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-
-import java.math.BigDecimal;
-import java.lang.String;
-import java.math.MathContext;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.net.URL;
-import java.sql.Time;
+import java.sql.Statement;
 import java.util.ResourceBundle;
-import java.util.Stack;
 
 public class Controller implements Initializable {
-    final int MAXLEN = 20;
+    final int MAXLEN = 30;
 
     @FXML public Label mainScreen;
     @FXML public Label secondScreen;
 
-    /*String numString = "";
-    private void appendNum(int dig) {
-        String mainText = mainScreen.getText();
-        if (mainText.length() < MAXLEN) {
-            String newDig = new Integer(dig).toString();
-            if (mainText.equals("0")) {
-                mainScreen.setText(newDig);
-            }
-            else {
-                mainScreen.setText(mainText+newDig);
-            }
-            numString += newDig;
-        }
-    }
-    BigDecimal ans = BigDecimal.ZERO;
-    BigDecimal res = BigDecimal.ONE;
-    public void clear(ActionEvent event) {
-        mainScreen.setText("0");
-        secondScreen.setText("");
-        res = BigDecimal.ONE;
-        ans = BigDecimal.ZERO;
-        numString = "";
-        wait = false;
-    }
-    char lastPlus = '+', lastMul = '*', lastSym = '+';
-    boolean wait = false;
-    private void appendSymbol(char sym) {
-        String mainText = mainScreen.getText();
-        if (mainText.length() < MAXLEN) {
-            mainScreen.setText(mainText+new Character(sym).toString());
-            BigDecimal num;
-            if (numString.length() > 0) {
-                num = new BigDecimal(numString);
-                numString = "";
-            }
-            else {
-                num = new BigDecimal("0");
-            }
-            if (sym == '+' || sym == '-') {
-                if (wait) {
-                    calculate(lastMul, num);
-                    calculate(lastPlus, res);
-                    res = BigDecimal.ONE;
-                    lastPlus = sym;
-                    wait = false;
-                }
-                else {
-                    calculate(lastPlus, num);
-                    lastPlus = sym;
-                }
-            }
-            if (sym == '*' || sym == '/') {
-                if (wait) {
-                    calculate(lastMul, num);
-                    lastMul = sym;
-                }
-                else {
-                    calculate(lastMul, num);
-                    lastMul = sym;
-                    wait = true;
-                }
-            }
-            lastSym = sym;
-        }
-    }
-    private void calculate(char sym, BigDecimal tmp) {
-        if (sym == '+') {
-            ans = ans.add(tmp);
-        }
-        if (sym == '-') {
-            ans = ans.subtract(tmp);
-        }
-        if (sym == '*') {
-            res = res.multiply(tmp);
-        }
-import java.net.URL;
-import java.sql.Time;
-import java.util.ResourceBundle;
-import java.util.Stack;
-
-public class Controller implements Initializable {
-    final int MAXLEN = 20;
-
-    @FXML public Label mainScreen;
-    @FXML public Label secondScreen;
-
-    /*String numString = "";
-    private void appendNum(int dig) {
-        String mainText = mainScreen.getText();
-        if (mainText.length() < MAXLEN) {
-            String newDig = new Integer(dig).toString();
-            if (mainText.equals("0")) {
-                mainScreen.setText(newDig);
-            }
-            else {
-                mainScreen.setText(mainText+newDig);
-            }
-            numString += newDig;
-        }
-    }
-    BigDecimal ans = BigDecimal.ZERO;
-    BigDecimal res = BigDecimal.ONE;
-    public void clear(ActionEvent event) {
-        mainScreen.setText("0");
-        secondScreen.setText("");
-        res = BigDecimal.ONE;
-        ans = BigDecimal.ZERO;
-        numString = "";
-        wait = false;
-    }
-    char lastPlus = '+', lastMul = '*', lastSym = '+';
-    boolean wait = false;
-    private void appendSymbol(char sym) {
-        String mainText = mainScreen.getText();
-        if (mainText.length() < MAXLEN) {
-            mainScreen.setText(mainText+new Character(sym).toString());
-            BigDecimal num;
-            if (numString.length() > 0) {
-                num = new BigDecimal(numString);
-                numString = "";
-            }
-            else {
-                num = new BigDecimal("0");
-            }
-            if (sym == '+' || sym == '-') {
-                if (wait) {
-                    calculate(lastMul, num);
-                    calculate(lastPlus, res);
-                    res = BigDecimal.ONE;
-                    lastPlus = sym;
-                    wait = false;
-                }
-                else {
-                    calculate(lastPlus, num);
-                    lastPlus = sym;
-                }
-            }
-            if (sym == '*' || sym == '/') {
-                if (wait) {
-                    calculate(lastMul, num);
-                    lastMul = sym;
-                }
-                else {
-                    calculate(lastMul, num);
-                    lastMul = sym;
-                    wait = true;
-                }
-            }
-            lastSym = sym;
-        }
-    }
-    private void calculate(char sym, BigDecimal tmp) {
-        if (sym == '+') {
-            ans = ans.add(tmp);
-        }
-        if (sym == '-') {
-            ans = ans.subtract(tmp);
-        }
-        if (sym == '*') {
-            res = res.multiply(tmp);
-        }
-        if (sym == '/') {
-            res = res.divide(tmp);
-        }
-    }
-    public void equal(ActionEvent event) {
-        BigDecimal num;
-        if (numString.length() > 0) {
-            num = new BigDecimal(numString);
-            numString = "";
-        }
-        else {
-            num = new BigDecimal("0");
-        }
-        if (lastSym == '+' || lastSym == '-') {
-            calculate(lastPlus, num);
-        }
-        if (lastSym == '*' || lastSym == '/') {
-            calculate(lastMul, num);
-            calculate(lastPlus, res);
-        }
-        secondScreen.setText(mainScreen.getText());
-        mainScreen.setText(ans.toString());
-        res = BigDecimal.ONE;
-        lastPlus = '+';
-        lastMul = '*';
-        lastSym = '+';
-        numString = "";
-        wait = false;
-    }*/
-
-
-    boolean lastIsSym = false;
-    private void appendNum(int dig) {
-        lastIsSym = false;
-        String mainText = mainScreen.getText();
-        if (mainText.length() < MAXLEN) {
-            String newDig = Integer.toString(dig);
-            if (mainText.equals("0")) {
-                mainScreen.setText(newDig);
-            }
-            else {
-                mainScreen.setText(mainText+newDig);
-            }
-        }
-    }
-    private void appendPoint() {
-        lastIsSym = false;
-    }
-    private void appendSymbol(char sym) {
-        if (lastIsSym) {
-
-        }
-        else {
-            String mainText = mainScreen.getText();
-            if (mainText.length() < MAXLEN) {
-                mainScreen.setText(mainText+sym);
-            }
-        }
-        lastIsSym = true;
-    }
     public void typeNumZero(ActionEvent event) {
         appendNum(0);
     }
@@ -294,22 +65,152 @@ public class Controller implements Initializable {
     public void divide(ActionEvent event) {
         appendSymbol('/');
     }
-    public void delete(ActionEvent event) {
+
+    boolean start = false;
+    boolean lastIsSymbol = false;
+    boolean haveOnePoint = false;
+    private void appendNum(int dig) {
+        lastIsSymbol = false;
         String mainText = mainScreen.getText();
-        if (mainText.length() > 1) {
-            mainScreen.setText(mainText.substring(0, mainText.length()-1));
+        if (mainText.length() < MAXLEN) {
+            String newDig = Integer.toString(dig);
+            if (mainText.equals("0") || start) {
+                mainScreen.setText(newDig);
+                start = false;
+            }
+            else {
+                mainScreen.setText(mainText+newDig);
+            }
+            setFontSize(mainText.length());
+        }
+    }
+    private void appendPoint() {
+        lastIsSymbol = false;
+        if (start) {
+            mainScreen.setText("0.");
+        }
+        else if (haveOnePoint) {
+
         }
         else {
-            mainScreen.setText("0");
+            String mainText = mainScreen.getText();
+            if (mainText.length() < MAXLEN) {
+                mainScreen.setText(mainText+".");
+            }
+            haveOnePoint = true;
         }
+    }
+    private void appendSymbol(char sym) {
+        if (lastIsSymbol) {
+            String mainText = mainScreen.getText();
+            if (mainText.length() > 0) {
+                mainText = mainText.substring(0, mainText.length()-1);
+                mainText += sym;
+                mainScreen.setText(mainText);
+            }
+        }
+        else {
+            String mainText = mainScreen.getText();
+            if (mainText.charAt(0)=='=') {
+                mainText = mainText.substring(1, mainText.length());
+            }
+            if (mainText.length() < MAXLEN) {
+                mainScreen.setText(mainText+sym);
+            }
+            setFontSize(mainText.length());
+            haveOnePoint = false;
+            lastIsSymbol = true;
+            start = false;
+        }
+    }
+    private void setFontSize(int len) {
+        if (len > 24) {
+            mainScreen.setFont(new Font("Microsoft YaHei", 40));
+        }
+        else if (len > 18) {
+            mainScreen.setFont(new Font("Microsoft YaHei", 45));
+        }
+        else if (len > 12) {
+            mainScreen.setFont(new Font("Microsoft YaHei", 50));
+        }
+        else if (len > 6) {
+            mainScreen.setFont(new Font("Microsoft YaHei", 55));
+        }
+        else {
+            mainScreen.setFont(new Font("Microsoft YaHei", 60));
+        }
+    }
+
+    public void delete(ActionEvent event) {
+        String mainText = mainScreen.getText();
+        String newText = "0";
+        if (mainText.length() > 1) {
+            newText = mainText.substring(0, mainText.length() - 1);
+        }
+        lastIsSymbol = judgeSym(newText.charAt(newText.length()-1));
+        haveOnePoint = false;
+        for (int i=newText.length()-1; i>=0; i--) {
+            if (judgeSym(newText.charAt(i))) {
+                break;
+            }
+            if (newText.charAt(i)=='.') {
+                haveOnePoint = true;
+            }
+        }
+        mainScreen.setText(newText);
     }
     public void clear(ActionEvent event) {
         mainScreen.setText("0");
+        secondScreen.setText("");
+        lastIsSymbol = false;
+        haveOnePoint = false;
     }
-    public void equal(ActionEvent event) {
-
+    public void equal(ActionEvent event) throws ScriptException {
+        String expression = mainScreen.getText();
+        if (expression.charAt(0)=='=') {
+            expression = expression.substring(1, expression.length());
+        }
+        Character last = expression.charAt(expression.length()-1);
+        if (judgeSym(last)) {
+            expression = expression.substring(0, expression.length()-1);
+        }
+        secondScreen.setText(expression);
+        String ans = caculate(expression);
+        if (ans.equals("NaN")||ans.equals("Infinity")) {
+            ans = "不能除以0";
+        }
+        else {
+            ans = "=" + ans;
+        }
+        mainScreen.setText(ans);
+        setFontSize(ans.length());
+        lastIsSymbol = false;
+        haveOnePoint = false;
+        start = true;
+    }
+    private String caculate(String expression) throws ScriptException {
+        StringBuilder evalStringBuilder = new StringBuilder();
+        for (int i=0; i<expression.length(); i++) {
+            Character c = expression.charAt(i);
+            if (c.equals('.') && i>0 && !Character.isDigit(expression.charAt(i-1))) {
+                evalStringBuilder.append("0");
+            }
+            evalStringBuilder.append(c);
+            if (c.equals('.') && i<expression.length()-1 && !Character.isDigit(expression.charAt(i+1))) {
+                evalStringBuilder.append("0");
+            }
+            if (c.equals('.') && i==expression.length()-1) {
+                evalStringBuilder.append("0");
+            }
+        }
+        String evalString = evalStringBuilder.toString();
+        System.out.println(evalString);
+        return new ScriptEngineManager().getEngineByName("js").eval(evalString).toString();
     }
 
+    private boolean judgeSym(Character c) {
+        return c.equals('+')||c.equals('-')||c.equals('*')||c.equals('/');
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
