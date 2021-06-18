@@ -43,83 +43,83 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
             </rowConstraints>
             <children>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#clear" styleClass="KeyboardButton" text="C" textAlignment="CENTER" textFill="#ee7621" textOverrun="CENTER_ELLIPSIS">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#clear" styleClass="KeyboardButton" text="C" textAlignment="CENTER" textFill="#ee7621">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#delete" styleClass="KeyboardButton" text=" ← " textFill="#ee7621" GridPane.columnIndex="1">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#delete" styleClass="KeyboardButton" text=" ← " textAlignment="CENTER" textFill="#ee7621" GridPane.columnIndex="1">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" styleClass="KeyboardButton" text=" % " textFill="#ee7621" GridPane.columnIndex="2">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#percent" styleClass="KeyboardButton" text=" % " textAlignment="CENTER" textFill="#ee7621" GridPane.columnIndex="2">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#divide" styleClass="KeyboardButton" text=" / " textFill="#ee7621" GridPane.columnIndex="3">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#divide" styleClass="KeyboardButton" text=" / " textAlignment="CENTER" textFill="#ee7621" GridPane.columnIndex="3">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumSeven" styleClass="KeyboardButton" text=" 7 " GridPane.rowIndex="1">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumSeven" styleClass="KeyboardButton" text=" 7 " textAlignment="CENTER" GridPane.rowIndex="1">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumEight" styleClass="KeyboardButton" text=" 8 " GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumEight" styleClass="KeyboardButton" text=" 8 " textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumNine" styleClass="KeyboardButton" text=" 9 " GridPane.columnIndex="2" GridPane.rowIndex="1">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumNine" styleClass="KeyboardButton" text=" 9 " textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#multiple" styleClass="KeyboardButton" text=" * " textFill="#ee7621" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#multiple" styleClass="KeyboardButton" text=" * " textAlignment="CENTER" textFill="#ee7621" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumFour" styleClass="KeyboardButton" text=" 4 " GridPane.rowIndex="2">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumFour" styleClass="KeyboardButton" text=" 4 " textAlignment="CENTER" GridPane.rowIndex="2">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumFive" styleClass="KeyboardButton" text=" 5 " GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumFive" styleClass="KeyboardButton" text=" 5 " textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumSix" styleClass="KeyboardButton" text=" 6 " GridPane.columnIndex="2" GridPane.rowIndex="2">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumSix" styleClass="KeyboardButton" text=" 6 " textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#minus" styleClass="KeyboardButton" text=" - " textFill="#ee7621" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#minus" styleClass="KeyboardButton" text=" - " textAlignment="CENTER" textFill="#ee7621" GridPane.columnIndex="3" GridPane.rowIndex="2">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumOne" styleClass="KeyboardButton" text=" 1 " GridPane.rowIndex="3">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumOne" styleClass="KeyboardButton" text=" 1 " textAlignment="CENTER" GridPane.rowIndex="3">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumTwo" styleClass="KeyboardButton" text=" 2 " GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumTwo" styleClass="KeyboardButton" text=" 2 " textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumThree" styleClass="KeyboardButton" text=" 3 " GridPane.columnIndex="2" GridPane.rowIndex="3">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumThree" styleClass="KeyboardButton" text=" 3 " textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="3">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#plus" styleClass="KeyboardButton" text=" + " textFill="#ee7621" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#plus" styleClass="KeyboardButton" text=" + " textAlignment="CENTER" textFill="#ee7621" GridPane.columnIndex="3" GridPane.rowIndex="3">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" styleClass="KeyboardButton" text=" S " textFill="#ee7621" GridPane.rowIndex="4">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" styleClass="KeyboardButton" text=" S " textAlignment="CENTER" textFill="#ee7621" GridPane.rowIndex="4">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumZero" styleClass="KeyboardButton" text=" 0 " GridPane.columnIndex="1" GridPane.rowIndex="4">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#typeNumZero" styleClass="KeyboardButton" text=" 0 " textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#point" styleClass="KeyboardButton" text=" . " GridPane.columnIndex="2" GridPane.rowIndex="4">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#point" styleClass="KeyboardButton" text=" . " textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="4">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>
-                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#equal" styleClass="KeyboardButton" text=" = " textFill="#ee7621" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                <Button alignment="CENTER" contentDisplay="CENTER" ellipsisString="." maxHeight="Infinity" maxWidth="Infinity" onAction="#equal" styleClass="KeyboardButton" text=" = " textAlignment="CENTER" textFill="#ee7621" GridPane.columnIndex="3" GridPane.rowIndex="4">
                <font>
                   <Font name="Microsoft YaHei" size="32.0" />
                </font></Button>

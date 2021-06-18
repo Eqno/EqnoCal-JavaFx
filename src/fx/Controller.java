@@ -1,6 +1,7 @@
 package fx;
 
 import com.sun.glass.ui.Size;
+import com.sun.javafx.css.CalculatedValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -11,7 +12,9 @@ import java.lang.String;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.Statement;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -65,8 +68,44 @@ public class Controller implements Initializable {
     public void divide(ActionEvent event) {
         appendSymbol('/');
     }
+    public void percent(ActionEvent event) throws ScriptException {
+        String mainText = mainScreen.getText();
+        if (mainText.charAt(0)=='=') {
+            mainText = mainText.substring(1);
+        }
+        for (int i=mainText.length()-1; i>=0; i--) {
+            char c = mainText.charAt(i);
+            if (judgeSym(c)) {
+                String left = mainText.substring(0, i);
+                if (c=='+'||c=='-') {
+                    String right = calculate(calculate(left)+"/100*"+mainText.substring(i+1));
+                    for (int j=right.length()-1; j>=0; j--) {
+                        if (right.charAt(j)=='0') {
+
+                        }
+                        else if (right.charAt(j)=='.') {
+                            right = right.substring(0, j);
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                    mainScreen.setText(left+c+right);
+                }
+                else {
+                    String right = calculate(mainText.substring(i+1)+"/100");
+                    mainScreen.setText(left+c+right);
+                }
+                return ;
+            }
+        }
+        if (mainText.length() < MAXLEN) {
+            mainScreen.setText(calculate(mainText+"/100"));
+        }
+    }
 
     boolean start = false;
+    boolean startex = false;
     boolean lastIsSymbol = false;
     boolean haveOnePoint = false;
     private void appendNum(int dig) {
@@ -111,11 +150,17 @@ public class Controller implements Initializable {
         }
         else {
             String mainText = mainScreen.getText();
-            if (mainText.charAt(0)=='=') {
-                mainText = mainText.substring(1, mainText.length());
+            if (startex) {
+                mainScreen.setText("0"+sym);
+                startex = false;
             }
-            if (mainText.length() < MAXLEN) {
-                mainScreen.setText(mainText+sym);
+            else {
+                if (mainText.charAt(0)=='=') {
+                    mainText = mainText.substring(1);
+                }
+                if (mainText.length() < MAXLEN) {
+                    mainScreen.setText(mainText+sym);
+                }
             }
             setFontSize(mainText.length());
             haveOnePoint = false;
@@ -175,9 +220,10 @@ public class Controller implements Initializable {
             expression = expression.substring(0, expression.length()-1);
         }
         secondScreen.setText(expression);
-        String ans = caculate(expression);
-        if (ans.equals("NaN")||ans.equals("Infinity")) {
+        String ans = calculate(expression);
+        if (ans.equals("NaN")||ans.equals("Infinity")||ans.equals("-Infinity")) {
             ans = "不能除以0";
+            startex = true;
         }
         else {
             ans = "=" + ans;
@@ -188,7 +234,7 @@ public class Controller implements Initializable {
         haveOnePoint = false;
         start = true;
     }
-    private String caculate(String expression) throws ScriptException {
+    private String calculate(String expression) throws ScriptException {
         StringBuilder evalStringBuilder = new StringBuilder();
         for (int i=0; i<expression.length(); i++) {
             Character c = expression.charAt(i);
