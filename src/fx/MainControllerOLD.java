@@ -1,6 +1,6 @@
 package fx;
 
-public class OLD {
+public class MainControllerOLD {
     /*String numString = "";
     private void appendNum(int dig) {
         String mainText = mainScreen.getText();

@@ -1,7 +1,5 @@
 package fx;
 
-import com.sun.glass.ui.Size;
-import com.sun.javafx.css.CalculatedValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,17 +10,18 @@ import java.lang.String;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.sql.Statement;
-import java.util.Calendar;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class MainController implements Initializable {
     final int MAXLEN = 30;
 
     @FXML public Label mainScreen;
     @FXML public Label secondScreen;
 
+    public void superMode(ActionEvent event) throws Exception {
+        Scientific scienceMode = new Scientific();
+        scienceMode.show();
+    }
     public void typeNumZero(ActionEvent event) {
         appendNum(0);
     }
@@ -113,9 +112,10 @@ public class Controller implements Initializable {
         String mainText = mainScreen.getText();
         if (mainText.length() < MAXLEN) {
             String newDig = Integer.toString(dig);
-            if (mainText.equals("0") || start) {
+            if (mainText.equals("0") || start || startex) {
                 mainScreen.setText(newDig);
                 start = false;
+                startex = false;
             }
             else {
                 mainScreen.setText(mainText+newDig);
@@ -220,13 +220,19 @@ public class Controller implements Initializable {
             expression = expression.substring(0, expression.length()-1);
         }
         secondScreen.setText(expression);
-        String ans = calculate(expression);
-        if (ans.equals("NaN")||ans.equals("Infinity")||ans.equals("-Infinity")) {
-            ans = "不能除以0";
-            startex = true;
+        String ans = expression;
+        if (expression.equals("不能除以0")) {
+
         }
         else {
-            ans = "=" + ans;
+            ans = calculate(expression);
+            if (ans.equals("NaN")||ans.equals("Infinity")||ans.equals("-Infinity")) {
+                ans = "不能除以0";
+                startex = true;
+            }
+            else {
+                ans = "=" + ans;
+            }
         }
         mainScreen.setText(ans);
         setFontSize(ans.length());
@@ -253,7 +259,6 @@ public class Controller implements Initializable {
         System.out.println(evalString);
         return new ScriptEngineManager().getEngineByName("js").eval(evalString).toString();
     }
-
     private boolean judgeSym(Character c) {
         return c.equals('+')||c.equals('-')||c.equals('*')||c.equals('/');
     }
