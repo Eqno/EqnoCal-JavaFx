@@ -76,7 +76,7 @@ public class KeyboardController {
     public void divide(ActionEvent event) {
         appendSymbol('/');
     }
-    public void percent(ActionEvent event) throws ScriptException {
+    public void percent(ActionEvent event) throws Exception {
         String mainText = mainScreen.getText();
         if (mainText.charAt(0)=='=') {
             mainText = mainText.substring(1);
@@ -267,7 +267,7 @@ public class KeyboardController {
         numOfLeftParen = 0;
         numOfRightParen = 0;
     }
-    public void equal(ActionEvent event) throws ScriptException {
+    public void equal(ActionEvent event) throws Exception {
         String expression = mainScreen.getText();
         if (expression.charAt(0)=='=') {
             expression = expression.substring(1, expression.length());
@@ -359,7 +359,7 @@ public class KeyboardController {
             }
         }
     }
-    public void reciprocal(ActionEvent e) throws ScriptException {
+    public void reciprocal(ActionEvent e) throws Exception {
         String mainText = mainScreen.getText();
         if (mainText.charAt(0)=='=') {
             mainText = mainText.substring(1);
@@ -377,7 +377,7 @@ public class KeyboardController {
                 right = completeParen(right);
                 // paren
 
-                right = calculate("Math#pow("+right+",-1)");
+                right = calculate("pow("+right+",-1)");
                 if (right.equals("Infinity")) {
                     setMainScreen("0没有倒数！");
                     startex = true;
@@ -403,7 +403,7 @@ public class KeyboardController {
             ans = completeParen(ans);
             // paren
 
-            ans = calculate("Math#pow("+ans+",-1)");
+            ans = calculate("pow("+ans+",-1)");
             if (ans.equals("Infinity")) {
                 ans = "0没有倒数！";
                 startex = true;
@@ -527,7 +527,7 @@ public class KeyboardController {
         }
         return expression;
     }
-    private String calculate(String expression) throws ScriptException {
+    private String calculate(String expression) throws Exception {
         StringBuilder evalStringBuilder = new StringBuilder();
         for (int i = 0; i < expression.length(); i++) {
             Character c = expression.charAt(i);
@@ -547,37 +547,14 @@ public class KeyboardController {
             }
             // point
 
-            // e
-            else if (c.equals('e')) {
-                if (i<expression.length()-1 && judgeDigit(expression.charAt(i+1))) {
-                    if (expression.charAt(i+1)=='π') {
-                        if (i>0 && judgeDigit(expression.charAt(i-1))) {
-                            evalStringBuilder.append("*");
-                        }
-                        evalStringBuilder.append("Math.E");
-                    }
-                    else {
-                        evalStringBuilder.append(c);
-                    }
-                }
-                else {
-                    if (i>0 && judgeDigit(expression.charAt(i-1))) {
-                        evalStringBuilder.append("*");
-                    }
-                    evalStringBuilder.append("Math.E");
-                    if (i<expression.length()-1 && judgeDigit(expression.charAt(i+1))) {
-                        evalStringBuilder.append("*");
-                    }
-                }
-            }
-            // e
+           
 
             // π
             else if (c.equals('π')) {
                 if (i>0 && judgeDigit(expression.charAt(i-1))) {
                     evalStringBuilder.append("*");
                 }
-                evalStringBuilder.append("Math.PI");
+                evalStringBuilder.append("π");
                 if (i<expression.length()-1 && judgeDigit(expression.charAt(i+1))) {
                     if (expression.charAt(i+1)=='π'||expression.charAt(i+1)=='e') {
 
@@ -607,14 +584,12 @@ public class KeyboardController {
             // paren
 
             else {
-                if (c.equals('#')) {
-                    c = '.';
-                }
                 evalStringBuilder.append(c);
             }
         }
         String evalString = evalStringBuilder.toString();
         System.out.println(evalString);
-        return new ScriptEngineManager().getEngineByName("js").eval(evalString).toString();
+        //return new ScriptEngineManager().getEngineByName("js").eval(evalString).toString();
+        return new Calculator().eval(evalString);
     }
 }
