@@ -1,16 +1,14 @@
 package fx;
 
 import javafx.event.ActionEvent;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import sun.print.PSPrinterJob;
-
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import java.io.*;
 
 public class KeyboardController {
+    String evalSystem = "ST";
+
     final int MAXLEN = 30;
     private Label mainScreen, secondScreen;
     private static String mainScreenText = "0", secondScreenText = "";
@@ -84,39 +82,46 @@ public class KeyboardController {
         if (judgeSym(mainText.charAt(mainText.length()-1))) {
             mainText = mainText.substring(0, mainText.length()-1);
         }
-        for (int i=mainText.length()-1; i>=0; i--) {
-            char c = mainText.charAt(i);
-            if (judgeSym(c)) {
-                String left = mainText.substring(0, i);
-                if (c=='+'||c=='-') {
-                    String calLeft = completeParen(left);
-                    String calRight = completeParen(mainText.substring(i+1));
-                    String right = calculate(calLeft+"/100*"+calRight);
-                    for (int j=right.length()-1; j>=0; j--) {
-                        if (right.charAt(j)=='0') {
-
-                        }
-                        else if (right.charAt(j)=='.') {
-                            right = right.substring(0, j);
-                        }
-                        else {
-                            break;
-                        }
-                    }
-                    setMainScreen(left+c+right);
-                }
-                else {
-                    String calRight = completeParen(mainText.substring(i+1));
-                    String right = calculate(calRight+"/100");
-                    setMainScreen(left+c+right);
-                    haveOneE = false;
-                }
-                return ;
-            }
-        }
-        if (mainText.length() < MAXLEN) {
+        if (mainText.charAt(mainText.length()-1)==')') {
             setMainScreen(calculate(completeParen(mainText)+"/100"));
             haveOneE = false;
+            return ;
+        }
+        else {
+            for (int i=mainText.length()-1; i>=0; i--) {
+                char c = mainText.charAt(i);
+                if (judgeSym(c)) {
+                    String left = mainText.substring(0, i);
+                    if (c=='+'||c=='-') {
+                        String calLeft = completeParen(left);
+                        String calRight = completeParen(mainText.substring(i+1));
+                        String right = calculate(calLeft+"/100*"+calRight);
+                        for (int j=right.length()-1; j>=0; j--) {
+                            if (right.charAt(j)=='0') {
+
+                            }
+                            else if (right.charAt(j)=='.') {
+                                right = right.substring(0, j);
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        setMainScreen(left+c+right);
+                    }
+                    else {
+                        String calRight = completeParen(mainText.substring(i+1));
+                        String right = calculate(calRight+"/100");
+                        setMainScreen(left+c+right);
+                        haveOneE = false;
+                    }
+                    return ;
+                }
+            }
+            if (mainText.length() < MAXLEN) {
+                setMainScreen(calculate(completeParen(mainText)+"/100"));
+                haveOneE = false;
+            }
         }
     }
 
@@ -127,7 +132,7 @@ public class KeyboardController {
     private void appendNum(int dig) {
         lastIsSymbol = false;
         String mainText = mainScreen.getText();
-        if (mainText.length() < MAXLEN) {
+        if (mainText.length()<MAXLEN || start || startex) {
             String newDig = Integer.toString(dig);
             if (mainText.equals("0") || start || startex) {
                 setMainScreen(newDig);
@@ -175,9 +180,27 @@ public class KeyboardController {
         if (lastIsSymbol) {
             String mainText = mainScreen.getText();
             if (mainText.length() > 0) {
-                mainText = mainText.substring(0, mainText.length()-1);
-                mainText += sym;
-                setMainScreen(mainText);
+                if (judgeSym(sym)) {
+                    mainText = mainText.substring(0, mainText.length()-1);
+                    mainText += sym;
+                    setMainScreen(mainText);
+                    lastIsSymbol = true;
+                }
+                else {
+                    if (haveOnePoint) {
+
+                    }
+                    else {
+                        char lastChar = mainText.charAt(mainText.length()-2);
+                        if (Character.isDigit(lastChar) || lastChar=='.') {
+                            mainText = mainText.substring(0, mainText.length()-1);
+                            mainText += sym;
+                            setMainScreen(mainText);
+                            lastIsSymbol = false;
+                        }
+                    }
+
+                }
             }
         }
         else {
@@ -187,23 +210,51 @@ public class KeyboardController {
                 startex = false;
             }
             else {
-                if (mainText.charAt(0)=='=') {
-                    mainText = mainText.substring(1);
+                if (judgeSym(sym)) {
+                    if (mainText.charAt(0)=='=') {
+                        mainText = mainText.substring(1);
+                    }
+                    if (mainText.length() < MAXLEN) {
+                        if (mainText.length()>0 && mainText.charAt(mainText.length()-1)=='(' && sym!='-') {
+                            return ;
+                        }
+                        else {
+                            setMainScreen(mainText+sym);
+                            lastIsSymbol = true;
+                            haveOnePoint = false;
+                            haveOneE = false;
+                            eLeftIsSym = false;
+                            start = false;
+                        }
+                    }
                 }
-                if (mainText.length() < MAXLEN) {
-                    if (mainText.length()>0 && mainText.charAt(mainText.length()-1)=='(') {
-                        return ;
+                else {
+                    if (haveOnePoint) {
+
                     }
                     else {
-                        setMainScreen(mainText+sym);
+                        char lastChar = mainText.charAt(mainText.length()-1);
+                        if (Character.isDigit(lastChar) || lastChar=='.') {
+                            if (mainText.charAt(0)=='=') {
+                                mainText = mainText.substring(1);
+                            }
+                            if (mainText.length() < MAXLEN) {
+                                if (mainText.length()>0 && mainText.charAt(mainText.length()-1)=='(') {
+                                    return ;
+                                }
+                                else {
+                                    setMainScreen(mainText+sym);
+                                    lastIsSymbol = false;
+                                    haveOnePoint = false;
+                                    haveOneE = false;
+                                    eLeftIsSym = false;
+                                    start = false;
+                                }
+                            }
+                        }
                     }
                 }
             }
-            haveOnePoint = false;
-            haveOneE = false;
-            lastIsSymbol = true;
-            eLeftIsSym = false;
-            start = false;
         }
     }
     private void setFontSize(int len) {
@@ -234,7 +285,40 @@ public class KeyboardController {
         }
         String newText = "0";
         if (mainText.length() > 1) {
-            newText = mainText.substring(0, mainText.length() - 1);
+            if (mainText.length()>2) {
+                boolean flag = false;
+                if (mainText.length()>3){
+                    char i=mainText.charAt(mainText.length()-1);
+                    char j=mainText.charAt(mainText.length()-2);
+                    char k=mainText.charAt(mainText.length()-3);
+                    char l=mainText.charAt(mainText.length()-4);
+                    if ((i=='('&&j=='n'&&k=='i'&&l=='s')
+                            ||(i=='('&&j=='s'&&k=='o'&&l=='c')
+                            ||(i=='('&&j=='n'&&k=='a'&&l=='t')) {
+                        newText = mainText.substring(0, mainText.length() - 4);
+                        if (newText.equals("")) {
+                            newText = "0";
+                        }
+                        flag = true;
+                    }
+                }
+                if (mainText.length()>2) {
+                    char i=mainText.charAt(mainText.length()-1);
+                    char j=mainText.charAt(mainText.length()-2);
+                    char k=mainText.charAt(mainText.length()-3);
+                    if ((i=='('&&j=='g'&&k=='l')
+                            ||(i=='('&&j=='n'&&k=='l')) {
+                        newText = mainText.substring(0, mainText.length() - 3);
+                        if (newText.equals("")) {
+                            newText = "0";
+                        }
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    newText = mainText.substring(0, mainText.length() - 1);
+                }
+            }
         }
         lastIsSymbol = judgeSym(newText.charAt(newText.length()-1));
         haveOnePoint = false;
@@ -269,6 +353,7 @@ public class KeyboardController {
     }
     public void equal(ActionEvent event) throws Exception {
         String expression = mainScreen.getText();
+
         if (expression.charAt(0)=='=') {
             expression = expression.substring(1, expression.length());
         }
@@ -277,11 +362,20 @@ public class KeyboardController {
             expression = expression.substring(0, expression.length()-1);
         }
 
+        setSecondScreen(expression);
+
+        // sin
+        expression = completeSin(expression);
+        // sin
+
+        // sqrt
+        expression = completeSqrt(expression);
+        // sqrt
+
         // paren
         expression = completeParen(expression);
         // paren
 
-        setSecondScreen(expression);
         String ans = expression;
         if (expression.equals("不能除以0！")) {
 
@@ -290,6 +384,10 @@ public class KeyboardController {
             ans = calculate(expression);
             if (ans.equals("NaN")||ans.equals("Infinity")||ans.equals("-Infinity")) {
                 ans = "不能除以0！";
+                startex = true;
+            }
+            if (ans.equals("Error")) {
+                ans = "出错！";
                 startex = true;
             }
             else {
@@ -314,7 +412,7 @@ public class KeyboardController {
     public void e(ActionEvent e) {
         lastIsSymbol = false;
         String mainText = mainScreen.getText();
-        if (mainText.length() < MAXLEN) {
+        if (mainText.length() < MAXLEN || start || startex) {
             if (mainText.equals("0") || start || startex) {
                 setMainScreen("e");
                 haveOneE = true;
@@ -331,7 +429,10 @@ public class KeyboardController {
                 }
                 else {
                     char c = mainText.charAt(mainText.length()-1);
-                    if (judgeSym(c) || c=='π') {
+                    if (judgeSym(c)) {
+                        eLeftIsSym = true;
+                    }
+                    if (evalSystem.equals("JS") && c=='π') {
                         eLeftIsSym = true;
                     }
                     setMainScreen(mainText+"e");
@@ -343,7 +444,7 @@ public class KeyboardController {
     public void pi(ActionEvent e) {
         lastIsSymbol = false;
         String mainText = mainScreen.getText();
-        if (mainText.length() < MAXLEN) {
+        if (mainText.length() < MAXLEN || start || startex) {
             if (mainText.equals("0") || start || startex) {
                 setMainScreen("π");
                 start = false;
@@ -367,6 +468,22 @@ public class KeyboardController {
         if (judgeSym(mainText.charAt(mainText.length()-1))) {
             mainText = mainText.substring(0, mainText.length()-1);
         }
+        if (mainText.charAt(mainText.length()-1)==')') {
+            if (evalSystem.equals("JS")) {
+                setMainScreen("暂不支持!");
+                lastIsSymbol = false;
+                haveOnePoint = false;
+                eLeftIsSym = false;
+                haveOneE = false;
+                start = true;
+                numOfLeftParen = 0;
+                numOfRightParen = 0;
+            }
+            if (evalSystem.equals("ST")) {
+                makeReciprocal(mainText);
+                return ;
+            }
+        }
         for (int i=mainText.length()-1; i>=0; i--) {
             char c = mainText.charAt(i);
             if (judgeSym(c)) {
@@ -377,9 +494,26 @@ public class KeyboardController {
                 right = completeParen(right);
                 // paren
 
-                right = calculate("pow("+right+",-1)");
+                if (evalSystem.equals("JS")) {
+                    right = calculate("Math#pow("+right+",-1)");
+                }
+                if (evalSystem.equals("ST")) {
+                    right = calculate(right+"^(-1)");
+                }
+
                 if (right.equals("Infinity")) {
                     setMainScreen("0没有倒数！");
+                    startex = true;
+                    haveOneE = false;
+                    lastIsSymbol = false;
+                    haveOnePoint = false;
+                    eLeftIsSym = false;
+                    haveOneE = false;
+                    start = true;
+                    return ;
+                }
+                else if (right.equals("Error")) {
+                    setMainScreen("出错！");
                     startex = true;
                     haveOneE = false;
                     lastIsSymbol = false;
@@ -397,40 +531,120 @@ public class KeyboardController {
             }
         }
         if (mainText.length() < MAXLEN) {
-            String ans = mainText;
+            makeReciprocal(mainText);
+            return ;
+        }
+    }
+    private void makeReciprocal(String ans) throws Exception {
+        // paren
+        ans = completeParen(ans);
+        // paren
 
-            // paren
-            ans = completeParen(ans);
-            // paren
+        if (evalSystem.equals("JS")) {
+            ans = calculate("Math#pow("+ans+",-1)");
+        }
+        if (evalSystem.equals("ST")) {
+            ans = calculate(ans+"^(-1)");
+        }
 
-            ans = calculate("pow("+ans+",-1)");
-            if (ans.equals("Infinity")) {
-                ans = "0没有倒数！";
-                startex = true;
-            }
-            setMainScreen(ans);
-            haveOneE = false;
+
+        if (ans.equals("Infinity")) {
+            ans = "0没有倒数！";
+            startex = true;
+        }
+        else if (ans.equals("Error")) {
+            ans = "出错！";
+            startex = true;
+        }
+
+        setMainScreen(ans);
+        haveOneE = false;
+        lastIsSymbol = false;
+        haveOnePoint = false;
+        eLeftIsSym = false;
+        haveOneE = false;
+        start = true;
+    }
+    public void factorial(ActionEvent e) {
+        if (evalSystem.equals("ST")) {
+            appendSymbol('!');
+        }
+        if (evalSystem.equals("JS")) {
+            setMainScreen("暂不支持!");
             lastIsSymbol = false;
             haveOnePoint = false;
             eLeftIsSym = false;
             haveOneE = false;
             start = true;
+            numOfLeftParen = 0;
+            numOfRightParen = 0;
         }
     }
-    public void factorial(ActionEvent e) {
-
-    }
     public void squareRoot(ActionEvent e) {
+        String mainText = mainScreen.getText();
+        if (mainText.length()<MAXLEN || start || startex) {
+            if (mainText.equals("0") || start ||startex) {
+                setMainScreen("√");
+                start = false;
+                startex = false;
+            }
+            else if (mainText.charAt(mainText.length()-1)=='.' || mainText.charAt(mainText.length()-1)=='^') {
 
+            }
+            else {
+                setMainScreen(mainText+"√");
+                haveOneE = false;
+                lastIsSymbol = false;
+                haveOnePoint = false;
+                eLeftIsSym = false;
+                haveOneE = false;
+                start = false;
+                startex = false;
+            }
+        }
     }
     public void power(ActionEvent e) {
+        if (evalSystem.equals("ST")) {
+            String mainText = mainScreen.getText();
+            if (mainText.length()<MAXLEN || start || startex) {
+                if (mainText.equals("0") || start ||startex) {
+                    setMainScreen("^");
+                    start = false;
+                    startex = false;
+                }
+                else {
+                    char lastChar = mainText.charAt(mainText.length()-1);
+                    if (lastIsSymbol || lastChar=='√' || lastChar=='!' || lastChar=='(') {
 
+                    }
+                    else {
+                        setMainScreen(mainText+"^");
+                        haveOneE = false;
+                        haveOnePoint = false;
+                        eLeftIsSym = false;
+                        haveOneE = false;
+
+                        lastIsSymbol = true;
+                    }
+                }
+            }
+        }
+        if (evalSystem.equals("JS")) {
+            setMainScreen("暂不支持!");
+            lastIsSymbol = false;
+            haveOnePoint = false;
+            eLeftIsSym = false;
+            haveOneE = false;
+            start = true;
+            numOfLeftParen = 0;
+            numOfRightParen = 0;
+        }
     }
     public void lg(ActionEvent e) {
-
+        appendSin("lg(");
     }
     public void ln(ActionEvent e) {
-
+        appendSin("ln(");
     }
     int numOfLeftParen = 0, numOfRightParen = 0;
     public void leftParen(ActionEvent e) {
@@ -446,6 +660,7 @@ public class KeyboardController {
             else {
                 setMainScreen(mainText+"(");
                 haveOneE = false;
+                haveOnePoint = false;
                 numOfLeftParen ++;
             }
         }
@@ -459,13 +674,15 @@ public class KeyboardController {
             else {
                 if (mainText.length()>0 &&
                         (judgeSym(mainText.charAt(mainText.length()-1))
-                        || mainText.charAt(mainText.length()-1)=='(')) {
+                        || mainText.charAt(mainText.length()-1)=='(')
+                        || mainText.charAt(mainText.length()-1)=='√') {
 
                 }
                 else {
                     if (numOfRightParen < numOfLeftParen) {
                         lastIsSymbol = false;
                         setMainScreen(mainText+")");
+                        haveOnePoint = false;
                         haveOneE = false;
                         numOfRightParen ++;
                     }
@@ -474,19 +691,91 @@ public class KeyboardController {
         }
     }
     public void sin(ActionEvent e) {
-
+        appendSin("sin(");
     }
     public void cos(ActionEvent e) {
-
+        appendSin("cos(");
     }
     public void tan(ActionEvent e) {
-
+        appendSin("tan(");
     }
     public void secondPage(ActionEvent e) {
-
+        setMainScreen("敬请期待！");
+        lastIsSymbol = false;
+        haveOnePoint = false;
+        eLeftIsSym = false;
+        haveOneE = false;
+        start = true;
+        numOfLeftParen = 0;
+        numOfRightParen = 0;
     }
-    public void openFile(ActionEvent e) {
+    public void openFile(ActionEvent e) throws Exception {
+        File file = new File("expression.txt");
+        BufferedReader bufr;
+        try {
+            bufr = new BufferedReader(new FileReader(file));
+        }
+        catch (Exception ee) {
+            file.createNewFile();
+            bufr = new BufferedReader(new FileReader(file));
+        }
+        String mainText = mainScreen.getText();
+        if (mainText.equals("0")) {
+            String input = bufr.readLine();
+            bufr.close();
+            if (input==null) {
+                setSecondScreen(mainScreen.getText());
+                setMainScreen("输入为空！");
+            }
+            else {
+                setSecondScreen(input);
+                String ans = calculate(input);
+                setMainScreen(ans);
+                BufferedWriter bufw = new BufferedWriter(new FileWriter(file, false));
+                bufw.write(ans);
+                bufw.close();
+            }
+        }
+        else {
+            if (mainText.charAt(0)=='=') {
+                mainText = mainText.substring(1);
+            }
+            setSecondScreen(mainText);
+            String ans = calculate(mainText);
+            setMainScreen(ans);
+            BufferedWriter bufw = new BufferedWriter(new FileWriter(file, false));
+            bufw.write(ans);
+            bufw.close();
+        }
+        lastIsSymbol = false;
+        haveOnePoint = false;
+        eLeftIsSym = false;
+        haveOneE = false;
+        start = true;
+        numOfLeftParen = 0;
+        numOfRightParen = 0;
+    }
+    private void appendSin(String s) {
+        String mainText = mainScreen.getText();
+        if (mainText.charAt(mainText.length()-1)=='.') {
 
+        }
+        else if (mainText.length()<MAXLEN || start || startex) {
+            if (mainText.equals("0") || start || startex) {
+                setMainScreen(s);
+                numOfLeftParen ++;
+                start = false;
+                startex = false;
+            }
+            else {
+                setMainScreen(mainText+s);
+                numOfLeftParen ++;
+                haveOneE = false;
+                lastIsSymbol = false;
+                haveOnePoint = false;
+                eLeftIsSym = false;
+            }
+        }
     }
     private boolean judgeDigit(Character c) {
         if (Character.isDigit(c)) {
@@ -499,6 +788,136 @@ public class KeyboardController {
             return true;
         }
         return false;
+    }
+    private boolean judgeMul(Character c) {
+        if (judgeDigit(c)) {
+            return true;
+        }
+        if (c.equals(')')) {
+            return true;
+        }
+        return false;
+    }
+    private String completeSqrt(String expression) {
+        String ans = "";
+        boolean waitForRight = false;
+        boolean skip = false;
+        for (int i=0; i<expression.length(); i++) {
+            char thisChar = expression.charAt(i);
+            if (waitForRight) {
+                if (skip) {
+                    skip = false;
+                }
+                else if (judgeSym(thisChar)||thisChar=='π'||thisChar=='e') {
+                        ans += ")";
+                        waitForRight = false;
+                }
+            }
+            if (thisChar == '√') {
+                if (i < expression.length() - 1) {
+                    if (i>0 && judgeMul(expression.charAt(i-1))) {
+                        ans += "*";
+                    }
+                    if (expression.charAt(i+1) == '(') {
+                        if (evalSystem.equals("JS")) {
+                            ans += "Math#sqrt";
+                        }
+                        if (evalSystem.equals("ST")) {
+                            ans += "sqrt";
+                        }
+                    }
+                    else {
+                        if (evalSystem.equals("JS")) {
+                            ans += "Math#sqrt(";
+                        }
+                        else {
+                            ans += "sqrt(";
+                        }
+                        waitForRight = true;
+                        skip = true;
+                    }
+                }
+                else {
+                    if (i>0 && judgeMul(expression.charAt(i-1))) {
+                        ans += "*";
+                    }
+                    if (evalSystem.equals("JS")) {
+                        ans += "Math#sqrt(";
+                    }
+                    else {
+                        ans += "sqrt(";
+                    }
+                }
+            }
+            else  {
+                ans += thisChar;
+            }
+        }
+        return ans;
+    }
+    private  String completeSin(String expression) {
+        String ans = "";
+        for (int i=0; i<expression.length(); i++) {
+            char thisChar = expression.charAt(i);
+            if (i<expression.length()-2) {
+                boolean flag = false;
+                if (i<expression.length()-3) {
+                    // sin, cot, tan
+                    if ((thisChar=='s'&&expression.charAt(i+1)=='i'&&expression.charAt(i+2)=='n')
+                            || (thisChar=='c'&&expression.charAt(i+1)=='o'&&expression.charAt(i+2)=='s')
+                            || (thisChar=='t'&&expression.charAt(i+1)=='a'&&expression.charAt(i+2)=='n')){
+                        if (i>0 && judgeMul(expression.charAt(i-1))) {
+                            ans += "*";
+                        }
+                        if (evalSystem.equals("JS")) {
+                            ans = ans + "Math#" + thisChar;
+                        }
+                        if (evalSystem.equals("ST")) {
+                            ans = ans + thisChar;
+                        }
+                        flag = true;
+                    }
+                }
+                if (i<expression.length()-2) {
+                    if (thisChar=='l'&&expression.charAt(i+1)=='g') {
+                        if (i>0 && judgeMul(expression.charAt(i-1))) {
+                            ans += "*";
+                        }
+                        if (evalSystem.equals("JS")) {
+                            ans = ans + "Math#logXY";
+                            i ++;
+                        }
+                        if (evalSystem.equals("ST")) {
+                            ans = ans + "lg";
+                            i ++;
+                        }
+                        flag = true;
+                    }
+                    else if (thisChar=='l'&&expression.charAt(i+1)=='n') {
+                        if (i>0 && judgeMul(expression.charAt(i-1))) {
+                            ans += "*";
+                        }
+                        if (evalSystem.equals("JS")) {
+                            ans = ans + "Math#log";
+
+                            i ++;
+                        }
+                        if (evalSystem.equals("ST")) {
+                            ans = ans + "ln";
+                            i ++;
+                        }
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    ans += thisChar;
+                }
+            }
+            else {
+                ans += thisChar;
+            }
+        }
+        return ans;
     }
     private String completeParen(String expression) {
         boolean isExistOther = false;
@@ -547,14 +966,114 @@ public class KeyboardController {
             }
             // point
 
-           
+            // e
+            else if (c.equals('e')) {
+                if (i>0 && Character.isDigit(expression.charAt(i-1)) && i<expression.length()-1 && Character.isDigit(expression.charAt(i+1))) {
+                    evalStringBuilder.append("e");
+                }
+                else if (i>0 && judgeDigit(expression.charAt(i-1)) && i<expression.length()-1 && (expression.charAt(i+1)=='+'||expression.charAt(i+1)=='-')) {
+                    evalStringBuilder.append("e");
+                }
+                else {
+                    if (i>0 && judgeDigit(expression.charAt(i-1))) {
+                        evalStringBuilder.append("*");
+                    }
+                    if (evalSystem.equals("JS")) {
+                        evalStringBuilder.append("Math.E");
+                    }
+                    if (evalSystem.equals("ST")) {
+                        evalStringBuilder.append("E");
+                    }
+                    if (i<expression.length()-1 && judgeDigit(expression.charAt(i+1))) {
+                        evalStringBuilder.append("*");
+                    }
+                }
+            }
+                /*if (i>0 && (judgeDigit(expression.charAt(i-1))
+                        ||(i>1 && expression.charAt(i-1)=='(' && expression.charAt(i-2)=='t'))) {
+                    if (i<expression.length()-1 && Character.isDigit(expression.charAt(i+1))) {
+                        if (expression.charAt(i-1)=='π') {
+                            if (evalSystem.equals("JS")) {
+                                evalStringBuilder.append("*Math.E");
+                            }
+                            else {
+                                evalStringBuilder.append("e");
+                            }
+                        }
+                        else if (i>1 && expression.charAt(i-1)=='(' && expression.charAt(i-2)=='t') {
+                            if (evalSystem.equals("JS")) {
+                                evalStringBuilder.append("Math.E*");
+                            }
+                            else {
+                                evalStringBuilder.append("E");
+                            }
+                        }
+                        else {
+                                evalStringBuilder.append("e");
+                        }
+                    }
+                    else if (i<expression.length()-1 && (expression.charAt(i+1)=='-'||expression.charAt(i+1)=='+')
+                        && i<expression.length()-2 && Character.isDigit(expression.charAt(i+2))) {
+
+                        if (evalSystem.equals("JS")) {
+                            evalStringBuilder.append("*Math.E");
+                        }
+                        else {
+                            evalStringBuilder.append("e");
+                        }
+                    }
+                    else {
+                        if (i>1 && expression.charAt(i-1)=='(' && expression.charAt(i-2)=='t') {
+
+                            if (evalSystem.equals("JS")) {
+                                evalStringBuilder.append("Math.E");
+                            }
+                            if (evalSystem.equals("ST")) {
+                                evalStringBuilder.append("E");
+                            }
+                        }
+                        else {
+
+                            if (evalSystem.equals("JS")) {
+                                evalStringBuilder.append("*Math.E");
+                            }
+                            if (evalSystem.equals("ST")) {
+                                evalStringBuilder.append("*E");
+                            }
+                        }
+                    }
+                }
+                else {
+
+                    if (evalSystem.equals("JS")) {
+                        evalStringBuilder.append("Math.E");
+                    }
+                    if (evalSystem.equals("ST")) {
+                        evalStringBuilder.append("E");
+                    }
+                    if (i<expression.length()-1 && Character.isDigit(expression.charAt(i+1))) {
+                        evalStringBuilder.append("*");
+                    }
+                }
+            }*/
+            // e
 
             // π
             else if (c.equals('π')) {
                 if (i>0 && judgeDigit(expression.charAt(i-1))) {
-                    evalStringBuilder.append("*");
+                    if (expression.charAt(i-1)=='e') {
+
+                    }
+                    else {
+                        evalStringBuilder.append("*");
+                    }
                 }
-                evalStringBuilder.append("π");
+                if (evalSystem.equals("JS")) {
+                    evalStringBuilder.append("Math.PI");
+                }
+                if (evalSystem.equals("ST")) {
+                    evalStringBuilder.append("π");
+                }
                 if (i<expression.length()-1 && judgeDigit(expression.charAt(i+1))) {
                     if (expression.charAt(i+1)=='π'||expression.charAt(i+1)=='e') {
 
@@ -568,7 +1087,8 @@ public class KeyboardController {
 
             // paren
             else if (c.equals('(')) {
-                if (i>0 && judgeDigit(expression.charAt(i-1))) {
+                if (i>0 && (judgeDigit(expression.charAt(i-1))
+                        || expression.charAt(i-1)=='.')) {
                     evalStringBuilder.append("*");
                 }
                 evalStringBuilder.append(c);
@@ -577,11 +1097,23 @@ public class KeyboardController {
                 evalStringBuilder.append(c);
                 if (i<expression.length()-1
                         && (judgeDigit(expression.charAt(i+1))
-                        ||expression.charAt(i+1)=='(')) {
+                        || expression.charAt(i+1)=='(' || expression.charAt(i+1)=='.')) {
                     evalStringBuilder.append("*");
                 }
             }
             // paren
+
+            // #
+            else if (c.equals('#')) {
+                evalStringBuilder.append(".");
+            }
+            else if (c.equals('X')) {
+                evalStringBuilder.append("1");
+            }
+            else if (c.equals('Y')) {
+                evalStringBuilder.append("0");
+            }
+            // #
 
             else {
                 evalStringBuilder.append(c);
@@ -589,7 +1121,22 @@ public class KeyboardController {
         }
         String evalString = evalStringBuilder.toString();
         System.out.println(evalString);
-        //return new ScriptEngineManager().getEngineByName("js").eval(evalString).toString();
-        return new Calculator().eval(evalString);
+        if (evalSystem.equals("JS")) {
+            try {
+                return new ScriptEngineManager().getEngineByName("js").eval(evalString).toString();
+            }
+            catch (Exception e) {
+                return "Error";
+            }
+        }
+        if (evalSystem.equals("ST")) {
+            try {
+                return (""+new Calculator().eval(evalString).doubleValue());
+            }
+            catch (Exception e) {
+                return "Error";
+            }
+        }
+        return "No evalSystem!";
     }
 }

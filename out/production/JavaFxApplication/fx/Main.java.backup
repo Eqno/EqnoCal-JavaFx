@@ -1,31 +1,24 @@
-/*
-package fx;
-
 import java.math.BigDecimal;
 
-public class CalculatorOLD {
+public class Main {
     public static void main(String[] args) throws Exception {
-        SyntaxTree tree = SyntaxTree.parse("1.1");
-        System.out.println(tree.eval().toString());
-    }
-    public String eval(String input) throws Exception {
-        return SyntaxTree.parse(input).eval().toString();
+        SyntaxTree tree = SyntaxTree.parse("1!+2!+3!*(1)+e");
+        System.out.println(tree.toString() + "=" + tree.eval().toString());
     }
 }
 
-*/
 /**
  * expr     ::= addi
  * addi     ::= mult | ( addi ( "+" | "-" ) mult )
  * mult     ::= prim | ( mult ( "*" | "/" ) prim )
  * prim     ::= cons | func
- * func     ::= ( [NAME] "(" expr ")" )
- * cons     ::= NUMB "e" NUMB | "e" | "π"
- *//*
-
+ * func     ::= ( [NAME] "(" expr ")" ) | ( prim "!")
+ * cons     ::= NUMB "e" NUMB | "E" | "π"
+ */
 
 class SyntaxTree {
     final static String PI = "π";
+    final static String EE = "E";
     final static String E = "e";
     final static boolean debug = false;
 
@@ -138,6 +131,9 @@ class SyntaxTree {
                 throw new Exception("Invalid function name.");
             }
         }
+        else if (s.charAt(s.length()-1) == '!') {
+            return new Factorial(parsePrim(s.substring(0, s.length()-1)));
+        }
         else {
             if (s.charAt(0) != '(' || s.charAt(s.length()-1) != ')') {
                 throw new Exception("Invalid paren.");
@@ -236,6 +232,12 @@ class Pi extends Number {
 class E extends Number {
     E() {
         super("e", BigDecimal.valueOf(Math.E));
+    }
+}
+
+class EE extends Number {
+    EE() {
+        super("E", BigDecimal.valueOf(Math.E));
     }
 }
 
@@ -347,4 +349,21 @@ class Tan extends Function {
         return BigDecimal.valueOf(Math.tan(val.eval().doubleValue()));
     }
 }
-*/
+
+class Factorial extends Function {
+    Factorial(Node val) {
+        super(val);
+        name = "!";
+    }
+    public String toString() {
+        return "(" + val.toString() + ")!";
+    }
+    public BigDecimal eval() {
+        long value = val.eval().longValue();
+        BigDecimal res = BigDecimal.ONE;
+        for (long i=1; i<=value; i++) {
+            res = res.multiply(BigDecimal.valueOf(i));
+        }
+        return res;
+    }
+}

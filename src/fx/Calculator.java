@@ -1,19 +1,38 @@
+package fx;
+
 import java.math.BigDecimal;
 
-public class Main {
+public class Calculator {
     public static void main(String[] args) throws Exception {
-        SyntaxTree tree = SyntaxTree.parse("1!+2!+(1+2)!");
-        System.out.println(tree.toString() + "=" + tree.eval().toString());
+        // String expr = "πe-1";
+        // String expr = "πe";
+        // String expr = "1e+10.1";
+        // String expr = "1e+10";
+        // String expr = "sqrt(-4.0)";
+        // String expr = "sqrt(-(-4.0))";
+        // String expr = "sqrt(+4.0)";
+        // String expr = "sqrt()";
+        String expr = "sqrt(4)!+sqrt(4!)";
+        SyntaxTree tree = parse(expr);
+        System.out.println(expr + " => " + tree.toString() + " = " + tree.eval().doubleValue());
+    }
+
+    public static SyntaxTree parse(String expr) throws Exception {
+        return SyntaxTree.parse(expr);
+    }
+    public static BigDecimal eval(String expr) throws Exception {
+        return SyntaxTree.parse(expr).eval();
     }
 }
 
 /**
  * expr     ::= addi
  * addi     ::= mult | ( addi ( "+" | "-" ) mult )
- * mult     ::= prim | ( mult ( "*" | "/" ) prim )
+ * mult     ::= powe | ( mult ( "*" | "/" ) powe )
+ * powe     ::= prim | ( powe "^" prim)
  * prim     ::= cons | func
  * func     ::= ( [NAME] "(" expr ")" ) | ( prim "!")
- * cons     ::= NUMB "e" NUMB | "E" | "π"
+ * cons     ::= NUMB ( "e" | "e+" | "e-" ) prim | "E" | "π"
  */
 
 class SyntaxTree {
@@ -72,6 +91,16 @@ class SyntaxTree {
     protected static Node parseAddi(String s) throws Exception {
         debugPrintln("parseAddi: " + s);
         int lastPlus = index(s, '+'), lastMinu = index(s, '-');
+        if (lastPlus > 0 && s.charAt(lastPlus-1) == 'e') {
+            if (lastPlus > 1 && isNumber(s.charAt(lastPlus-2))) {
+                lastPlus = -1;
+            }
+        }
+        if (lastMinu > 0 && s.charAt(lastMinu-1) == 'e') {
+            if (lastMinu > 1 && isNumber(s.charAt(lastMinu-2))) {
+                lastMinu = -1;
+            }
+        }
         if (lastPlus == -1 && lastMinu == -1) {
             return parseMult(s);
         }
@@ -87,14 +116,23 @@ class SyntaxTree {
         debugPrintln("parseMult: " + s);
         int lastMult = index(s, '*'), lastDivi = index(s, '/');
         if (lastMult == -1 && lastDivi == -1) {
-            return parsePrim(s);
+            return parsePower(s);
         }
         if (lastMult > lastDivi) {
-            return new Multiply(parseMult(s.substring(0, lastMult)), parsePrim(s.substring(lastMult+1)));
+            return new Multiply(parseMult(s.substring(0, lastMult)), parsePower(s.substring(lastMult+1)));
         }
         else {
-            return new Divide(parseMult(s.substring(0, lastDivi)), parsePrim(s.substring(lastDivi+1)));
+            return new Divide(parseMult(s.substring(0, lastDivi)), parsePower(s.substring(lastDivi+1)));
         }
+    }
+
+    protected static Node parsePower(String s) throws Exception {
+        debugPrintln("parsePower: " + s);
+        int lastPower = index(s, '^');
+        if (lastPower == -1) {
+            return parsePrim(s);
+        }
+        return new Power(parsePower(s.substring(0, lastPower)), parsePrim(s.substring(lastPower+1)));
     }
 
     protected static Node parsePrim(String s) throws Exception {
@@ -113,11 +151,24 @@ class SyntaxTree {
 
     protected static Node parseFunc(String s) throws Exception {
         debugPrintln("parseFunc: " + s);
-        if (isAlpha(s.charAt(0))) {
-            // is func
-            String funcName = s.substring(0, 3);
-            assert s.charAt(3) == '(' && s.charAt(s.length()-1) == ')';
-            Node val = parseExpr(s.substring(4, s.length()-1));
+        if (s.charAt(s.length()-1) == '!') {
+            // is factorial
+            return new Factorial(parsePrim(s.substring(0, s.length()-1)));
+        }
+        else if (isAlpha(s.charAt(0))) {
+            // is simple func
+            int pos;
+            for (pos=1; pos<s.length(); pos++) {
+                if (! isAlpha(s.charAt(pos)))
+                {
+                    break;
+                }
+            }
+            String funcName = s.substring(0, pos);
+            if (s.charAt(pos) != '(' || s.charAt(s.length()-1) != ')') {
+                throw new Exception("Invalid syntax.");
+            }
+            Node val = parseExpr(s.substring(pos+1, s.length()-1));
             if (funcName.equals("sin")) {
                 return new Sin(val);
             }
@@ -127,14 +178,30 @@ class SyntaxTree {
             else if (funcName.equals("tan")) {
                 return new Tan(val);
             }
+            else if (funcName.equals("arcsin")) {
+                return new Arcsin(val);
+            }
+            else if (funcName.equals("arccos")) {
+                return new Arccos(val);
+            }
+            else if (funcName.equals("arctan")) {
+                return new Arctan(val);
+            }
+            else if (funcName.equals("sqrt")) {
+                return new Sqrt(val);
+            }
+            else if (funcName.equals("lg")) {
+                return new Lg(val);
+            }
+            else if (funcName.equals("ln")) {
+                return new Ln(val);
+            }
             else {
                 throw new Exception("Invalid function name.");
             }
         }
-        else if (s.charAt(s.length()-1) == '!') {
-            return new Factorial(parsePrim(s.substring(0, s.length()-1)));
-        }
         else {
+            // only paren
             if (s.charAt(0) != '(' || s.charAt(s.length()-1) != ')') {
                 throw new Exception("Invalid paren.");
             }
@@ -154,15 +221,19 @@ class SyntaxTree {
         if (lastE == -1) {
             return new Number(s);
         }
-        return new Exp(parseCons(s.substring(0, lastE)), parseCons(s.substring(lastE+1)));
+        return new Exp(parseCons(s.substring(0, lastE)), parsePrim(s.substring(lastE+1)));
     }
 
     protected static boolean isConst(char ch) {
-        return ch == 'e' || ch == 'E' || ch == 'π' || isNumber(ch);
+        return ch == 'e' || isUnaryOp(ch) || isNumber(ch);
     }
 
     protected static boolean isNumber(char ch) {
-        return (ch == '.') || (ch >= '0' && ch <= '9');
+        return (ch == '.' || ch == 'E' || ch == 'π') || (ch >= '0' && ch <= '9');
+    }
+
+    protected static boolean isUnaryOp(char ch) {
+        return ch == '+' || ch == '-';
     }
 
     // protected static boolean isBinOp(char ch) {
@@ -261,9 +332,12 @@ class Minus extends BinOp {
 }
 
 class Multiply extends BinOp {
-    Multiply(Node lhs, Node rhs) {
+    Multiply(Node lhs, Node rhs) throws Exception {
         super(lhs, rhs);
         name = "*";
+        if (lhs instanceof Null) {
+            throw new Exception("Invalid input.");
+        }
     }
     public BigDecimal eval() throws Exception {
         return lhs.eval().multiply(rhs.eval());
@@ -271,9 +345,12 @@ class Multiply extends BinOp {
 }
 
 class Divide extends BinOp {
-    Divide(Node lhs, Node rhs) {
+    Divide(Node lhs, Node rhs) throws Exception {
         super(lhs, rhs);
         name = "/";
+        if (lhs instanceof Null) {
+            throw new Exception("Invalid input.");
+        }
     }
     public BigDecimal eval() throws Exception {
         return lhs.eval().divide(rhs.eval());
@@ -281,24 +358,45 @@ class Divide extends BinOp {
 }
 
 class Exp extends BinOp {
-    Exp(Node lhs, Node rhs) {
+    Exp(Node lhs, Node rhs) throws Exception {
         super(lhs, rhs);
         name = "e";
+        if (lhs instanceof Null) {
+            throw new Exception("Invalid input.");
+        }
     }
     public BigDecimal eval() throws Exception {
         if (rhs instanceof Null) {
             return lhs.eval().multiply(BigDecimal.valueOf(Math.E));
         }
         else {
-            return lhs.eval().multiply(BigDecimal.valueOf(Math.pow(10.0, rhs.eval().doubleValue())));
+            BigDecimal raw = rhs.eval();
+            if (raw.stripTrailingZeros().scale() > 0) {
+                throw new Exception("Only integers can be exp.");
+            }
+            return lhs.eval().multiply(BigDecimal.valueOf(Math.pow(10.0, raw.doubleValue())));
         }
+    }
+}
+
+class Power extends BinOp {
+    Power(Node lhs, Node rhs) {
+        super(lhs, rhs);
+        name = "^";
+    }
+    public BigDecimal eval() throws Exception {
+        return BigDecimal.valueOf(Math.pow(lhs.eval().doubleValue(), rhs.eval().doubleValue()));
     }
 }
 
 abstract class Function extends Node {
     protected Node val;
-    Function(Node val) {
+    Function(Node val, String name) throws Exception {
+        if (val instanceof Null) {
+            throw new Exception("Value of function cannot be empty.");
+        }
         this.val = val;
+        this.name = name;
     }
     public String toString() {
         return name + "(" + val.toString() + ")";
@@ -306,9 +404,8 @@ abstract class Function extends Node {
 }
 
 class Sin extends Function {
-    Sin(Node val) {
-        super(val);
-        name = "sin";
+    Sin(Node val) throws Exception {
+        super(val, "sin");
     }
     public BigDecimal eval() throws Exception {
         return BigDecimal.valueOf(Math.sin(val.eval().doubleValue()));
@@ -316,9 +413,8 @@ class Sin extends Function {
 }
 
 class Cos extends Function {
-    Cos(Node val) {
-        super(val);
-        name = "cos";
+    Cos(Node val) throws Exception {
+        super(val, "cos");
     }
     public BigDecimal eval() throws Exception {
         return BigDecimal.valueOf(Math.cos(val.eval().doubleValue()));
@@ -326,19 +422,75 @@ class Cos extends Function {
 }
 
 class Tan extends Function {
-    Tan(Node val) {
-        super(val);
-        name = "tan";
+    Tan(Node val) throws Exception {
+        super(val, "tan");
     }
     public BigDecimal eval() throws Exception {
         return BigDecimal.valueOf(Math.tan(val.eval().doubleValue()));
     }
 }
 
+class Arcsin extends Function {
+    Arcsin(Node val) throws Exception {
+        super(val, "arcsin");
+    }
+    public BigDecimal eval() throws Exception {
+        return BigDecimal.valueOf(Math.asin(val.eval().doubleValue()));
+    }
+}
+
+class Arccos extends Function {
+    Arccos(Node val) throws Exception {
+        super(val, "arccos");
+    }
+    public BigDecimal eval() throws Exception {
+        return BigDecimal.valueOf(Math.acos(val.eval().doubleValue()));
+    }
+}
+
+class Arctan extends Function {
+    Arctan(Node val) throws Exception {
+        super(val, "arctan");
+    }
+    public BigDecimal eval() throws Exception {
+        return BigDecimal.valueOf(Math.atan(val.eval().doubleValue()));
+    }
+}
+
+class Sqrt extends Function {
+    Sqrt(Node val) throws Exception {
+        super(val, "sqrt");
+    }
+    public BigDecimal eval() throws Exception {
+        BigDecimal raw = val.eval();
+        if (raw.compareTo(BigDecimal.ZERO) < 0) {
+            throw new Exception("Negtive number cannot be sqrt.");
+        }
+        return BigDecimal.valueOf(Math.sqrt(val.eval().doubleValue()));
+    }
+}
+
+class Lg extends Function {
+    Lg(Node val) throws Exception {
+        super(val, "lg");
+    }
+    public BigDecimal eval() throws Exception {
+        return BigDecimal.valueOf(Math.log10(val.eval().doubleValue()));
+    }
+}
+
+class Ln extends Function {
+    Ln(Node val) throws Exception {
+        super(val, "ln");
+    }
+    public BigDecimal eval() throws Exception {
+        return BigDecimal.valueOf(Math.log(val.eval().doubleValue()));
+    }
+}
+
 class Factorial extends Function {
-    Factorial(Node val) {
-        super(val);
-        name = "!";
+    Factorial(Node val) throws Exception {
+        super(val, "!");
     }
     public String toString() {
         return "(" + val.toString() + ")!";
