@@ -15,4 +15,4 @@
 可能会搬到Android上。
 <br>
 <br>
-已搬到安卓上，见[EqnoCal-Android](https://github.com/Eqno/EqnoCal-Android)。
+已搬到安卓上，见 [EqnoCal-Android](https://github.com/Eqno/EqnoCal-Android) 。
